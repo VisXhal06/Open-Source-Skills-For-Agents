@@ -1,0 +1,29 @@
+{
+  "change": {
+    "class": "prompt",
+    "summary": "Clarify the internal runbook assistant prompt"
+  },
+  "claim": "This change improves runbook-answer accuracy on incident steps without regressing safety warnings",
+  "tier": "low",
+  "baseline": {"n": 20, "passed": 15},
+  "candidate": {"n": 20, "passed": 17},
+  "budgets": {
+    "pass_rate_min": 0.75,
+    "cost_per_task_max": 0.02
+  },
+  "evidence": [
+    {"id": "regression_delta", "status": "present"},
+    {"id": "hard_slice", "status": "missing", "owner": "internal-owner"},
+    {"id": "cost_delta", "status": "present"}
+  ],
+  "risks": [],
+  "rollback": {
+    "steps": ["restore prompt v1"],
+    "owner": "internal-owner",
+    "tested": true
+  },
+  "observability": {
+    "trace_fields": [],
+    "alerts": []
+  }
+}

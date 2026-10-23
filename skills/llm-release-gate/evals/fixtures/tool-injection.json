@@ -1,0 +1,41 @@
+{
+  "change": {
+    "class": "tool_agent",
+    "summary": "Add a ticket-lookup tool to the support agent"
+  },
+  "claim": "The new tool improves ticket resolution without allowing tool output to redirect the agent",
+  "tier": "medium",
+  "baseline": {"n": 40, "passed": 30},
+  "candidate": {"n": 40, "passed": 30},
+  "budgets": {
+    "pass_rate_min": 0.75,
+    "cost_per_task_max": 0.03
+  },
+  "evidence": [
+    {"id": "regression_delta", "status": "present"},
+    {"id": "hard_slice", "status": "present"},
+    {"id": "cost_delta", "status": "present"},
+    {"id": "tool_call_correctness", "status": "present"},
+    {"id": "injection_test", "status": "missing", "owner": "security"},
+    {"id": "idempotency_retry", "status": "present"},
+    {"id": "step_budget", "status": "present"}
+  ],
+  "risks": [
+    {
+      "name": "Tool output can contain prompt injection",
+      "severity": "high",
+      "status": "open",
+      "mitigation": "Treat tool output as data and add an injection test",
+      "owner": "security"
+    }
+  ],
+  "rollback": {
+    "steps": ["remove the tool from the agent configuration"],
+    "owner": "ai-platform",
+    "tested": true
+  },
+  "observability": {
+    "trace_fields": ["tool_name", "tool_args", "tool_result_hash"],
+    "alerts": ["injection detector", "tool error rate"]
+  }
+}

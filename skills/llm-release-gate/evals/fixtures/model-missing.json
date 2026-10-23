@@ -1,0 +1,42 @@
+{
+  "change": {
+    "class": "model",
+    "summary": "Upgrade the support assistant to model B"
+  },
+  "claim": "Model B improves answer quality without regressing latency or policy compliance",
+  "tier": "medium",
+  "baseline": {"n": 40, "passed": 34},
+  "candidate": {"n": 40, "passed": 33},
+  "budgets": {
+    "pass_rate_min": 0.85,
+    "cost_per_task_max": 0.025,
+    "latency_p95_ms_max": 2500
+  },
+  "evidence": [
+    {"id": "regression_delta", "status": "present"},
+    {"id": "hard_slice", "status": "missing", "owner": "eval-owner"},
+    {"id": "cost_delta", "status": "present"},
+    {"id": "capability_delta", "status": "present"},
+    {"id": "judge_human_agreement", "status": "present"},
+    {"id": "latency_cost", "status": "present"},
+    {"id": "fallback", "status": "missing", "owner": "platform"}
+  ],
+  "risks": [
+    {
+      "name": "No tested fallback if model B is rate-limited",
+      "severity": "high",
+      "status": "open",
+      "mitigation": "Add model A fallback and rerun",
+      "owner": "platform"
+    }
+  ],
+  "rollback": {
+    "steps": ["switch the model alias back to model A"],
+    "owner": "platform",
+    "tested": false
+  },
+  "observability": {
+    "trace_fields": ["prompt_version", "model", "retrieval_ids"],
+    "alerts": ["p95 latency", "quality eval delta"]
+  }
+}

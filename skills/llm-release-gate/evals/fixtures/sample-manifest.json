@@ -1,0 +1,44 @@
+{
+  "change": {
+    "class": "prompt",
+    "summary": "Add refund-policy edge cases to the support prompt",
+    "commit": "example"
+  },
+  "claim": "This change improves refund-answer accuracy on policy-edge cases without regressing billing questions",
+  "tier": "medium",
+  "baseline": {
+    "n": 40,
+    "passed": 30,
+    "tokens_total": 120000,
+    "cost_total": 0.64,
+    "latency_ms": [1800, 1900, 2000, 2100, 2200]
+  },
+  "candidate": {
+    "n": 40,
+    "passed": 34,
+    "tokens_total": 128000,
+    "cost_total": 0.68,
+    "latency_ms": [1850, 1950, 2050, 2150, 2250]
+  },
+  "budgets": {
+    "pass_rate_min": 0.8,
+    "cost_per_task_max": 0.02,
+    "latency_p95_ms_max": 2500,
+    "regression_floor_pp": 0
+  },
+  "evidence": [
+    {"id": "regression_delta", "status": "present", "owner": "eval-owner"},
+    {"id": "hard_slice", "status": "present", "owner": "eval-owner"},
+    {"id": "cost_delta", "status": "present", "owner": "platform"}
+  ],
+  "risks": [],
+  "rollback": {
+    "steps": ["restore prompt v3 from the prompt registry"],
+    "owner": "ai-platform",
+    "tested": true
+  },
+  "observability": {
+    "trace_fields": ["prompt_version", "model", "retrieval_ids"],
+    "alerts": ["p95 latency", "refund-policy eval delta"]
+  }
+}

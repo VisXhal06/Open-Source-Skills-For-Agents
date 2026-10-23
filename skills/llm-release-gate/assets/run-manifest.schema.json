@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/llm-release-gate/run-manifest.schema.json",
+  "title": "LLM Release Gate Run Manifest",
+  "description": "Local evidence for one LLM change. The gate reads this file; it never fetches remote data.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["change", "claim", "tier", "baseline", "candidate"],
+  "properties": {
+    "change": {
+      "type": "object",
+      "required": ["class", "summary"],
+      "properties": {
+        "class": {
+          "enum": ["prompt", "model", "retrieval", "tool_agent", "infrastructure"]
+        },
+        "summary": {"type": "string", "minLength": 1},
+        "pr": {"type": "string"},
+        "commit": {"type": "string"}
+      }
+    },
+    "claim": {"type": "string", "minLength": 1},
+    "tier": {"enum": ["low", "medium", "high"]},
+    "baseline": {"$ref": "#/$defs/run"},
+    "candidate": {"$ref": "#/$defs/run"},
+    "budgets": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "pass_rate_min": {"type": "number", "minimum": 0, "maximum": 1},
+        "cost_per_task_max": {"type": "number", "minimum": 0},
+        "latency_p95_ms_max": {"type": "number", "minimum": 0},
+        "tokens_per_task_max": {"type": "number", "minimum": 0},
+        "retry_rate_max": {"type": "number", "minimum": 0, "maximum": 1},
+        "regression_floor_pp": {"type": "number"}
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "status"],
+        "properties": {
+          "id": {"type": "string"},
+          "status": {"enum": ["present", "missing", "waived"]},
+          "owner": {"type": "string"},
+          "artifact": {"type": "string"},
+          "note": {"type": "string"}
+        }
+      }
+    },
+    "risks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {"type": "string"},
+          "severity": {"enum": ["low", "medium", "high"]},
+          "status": {"enum": ["open", "closed", "mitigated", "accepted"]},
+          "mitigation": {"type": "string"},
+          "owner": {"type": "string"}
+        }
+      }
+    },
+    "rollback": {
+      "type": "object",
+      "properties": {
+        "steps": {"type": "array", "items": {"type": "string"}},
+        "owner": {"type": "string"},
+        "tested": {"type": "boolean"}
+      }
+    },
+    "observability": {
+      "type": "object",
+      "properties": {
+        "trace_fields": {"type": "array", "items": {"type": "string"}},
+        "alerts": {"type": "array", "items": {"type": "string"}}
+      }
+    }
+  },
+  "$defs": {
+    "run": {
+      "type": "object",
+      "required": ["n", "passed"],
+      "properties": {
+        "n": {"type": "integer", "minimum": 1},
+        "passed": {"type": "integer", "minimum": 0},
+        "tokens_total": {"type": "number", "minimum": 0},
+        "cost_total": {"type": "number", "minimum": 0},
+        "retry_count": {"type": "integer", "minimum": 0},
+        "judge_human_agreement": {"type": "number", "minimum": 0, "maximum": 1},
+        "latency_ms": {
+          "type": "array",
+          "items": {"type": "number", "minimum": 0}
+        },
+        "tasks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "passed"],
+            "properties": {
+              "id": {"type": "string"},
+              "passed": {"type": "boolean"},
+              "judge_passed": {"type": "boolean"},
+              "slice": {"type": "string"},
+              "tokens": {"type": "number", "minimum": 0},
+              "cost": {"type": "number", "minimum": 0},
+              "latency_ms": {"type": "number", "minimum": 0},
+              "retries": {"type": "integer", "minimum": 0}
+            }
+          }
+        }
+      }
+    }
+  }
+}

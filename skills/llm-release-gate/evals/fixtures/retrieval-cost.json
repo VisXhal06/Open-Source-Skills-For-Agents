@@ -1,0 +1,40 @@
+{
+  "change": {
+    "class": "retrieval",
+    "summary": "Switch chunking from 800 to 400 tokens and add a reranker"
+  },
+  "claim": "The new chunking improves groundedness on long policy documents without increasing cost per task",
+  "tier": "medium",
+  "baseline": {"n": 40, "passed": 32, "cost_total": 0.64},
+  "candidate": {"n": 40, "passed": 35, "cost_total": 0.896},
+  "budgets": {
+    "pass_rate_min": 0.85,
+    "cost_per_task_max": 0.02
+  },
+  "evidence": [
+    {"id": "regression_delta", "status": "present"},
+    {"id": "hard_slice", "status": "present"},
+    {"id": "cost_delta", "status": "present"},
+    {"id": "recall_at_k", "status": "present"},
+    {"id": "groundedness", "status": "present"},
+    {"id": "index_rollback", "status": "missing", "owner": "search-platform"}
+  ],
+  "risks": [
+    {
+      "name": "Cost per successful task is up 40 percent",
+      "severity": "medium",
+      "status": "open",
+      "mitigation": "Route long documents to the cheaper retriever",
+      "owner": "ai-platform"
+    }
+  ],
+  "rollback": {
+    "steps": ["restore the previous index alias"],
+    "owner": "search-platform",
+    "tested": false
+  },
+  "observability": {
+    "trace_fields": ["index_version", "retrieval_ids", "reranker_version"],
+    "alerts": ["cost per task", "groundedness"]
+  }
+}

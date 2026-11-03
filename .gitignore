@@ -1,0 +1,18 @@
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Runtime
+node_modules/
+__pycache__/
+*.pyc
+*.log
+
+# Build-ship team artifacts
+.ship/

@@ -1,6 +1,6 @@
 # Open Source Skills for Agents
 
-**93 agent skills in the portable `SKILL.md` format, plus the notes, reports, and research behind them — in one repository.**
+**94 agent skills in the portable `SKILL.md` format, plus a seven-role build-and-ship team, agent definitions for OpenCode and Claude Code, and the notes, reports, and research behind them — in one repository.**
 
 Agent skills are instruction packs that teach a coding agent how to do a specific kind of work well. This collection covers the whole lifecycle of software work: deciding what to build, planning it, implementing and verifying it, designing the interface, shipping it, researching problems, contributing to open source, and running client work.
 
@@ -52,7 +52,8 @@ Skills are not separate programs. They guide the agent's normal tools: reading f
 | Engineering leadership | 7 | Senior-dev operating system, project kickoff, codebase playbooks, testing, delegation, docs, launch readiness |
 | Freelancing and client work | 5 | Lead generation, proposals and pricing, product leadership, delivery, operations |
 | Goals, advice, and orchestration | 3 | Goal definition, expert advice, subagent orchestration |
-| **Total** | **93** | Plus 8 reference notes, 2 reports, and 9 research notes in `docs/` |
+| Build and ship | 1 | `build-ship-team`: seven named agents, six gates, evidence-based release |
+| **Total** | **94** | Plus 7 OpenCode agents, 7 Claude Code agents, 14 commands, and 8 reference notes, 2 reports, and 9 research notes in `docs/` |
 
 ## How skills load
 
@@ -61,6 +62,47 @@ Skills are not separate programs. They guide the agent's normal tools: reading f
 3. For reliable routing, name the skill explicitly: *"Use the `systematic-debugging` skill on this failure."*
 
 This keeps context small: you get a catalogue at startup and pay for the full instructions only when a skill is used.
+
+## The build-and-ship team
+
+`skills/build-ship-team` is the largest addition in this collection. It is one skill plus seven named agents that take a change from "we should build this" to "it is verified and shipped".
+
+| Role | Mission | Writes code |
+| --- | --- | --- |
+| `ship-lead` | Frame the outcome, pick the lane, route work, hold the ledger, make the ship call | No, except trivial glue |
+| `scout` | Map the repo: stack, commands, patterns, blast radius, unknowns | No |
+| `architect` | Smallest design: interfaces, slice order, file ownership, test strategy | Plan only |
+| `builder` | One vertical slice, tested, with a build report | Yes |
+| `verifier` | Run the real gates and report evidence | No |
+| `reviewer` | Independent review: correctness, security, data, UI quality | No |
+| `shipper` | Changelog, PR, deploy steps, rollback, post-deploy checks | Release files only |
+
+Three lanes keep it from becoming ceremony:
+
+| Lane | Use when | Team |
+| --- | --- | --- |
+| **Fast** | One file, obvious, reversible | lead + verifier |
+| **Standard** | Feature slice, 2–6 files | lead + builder + verifier |
+| **Full** | Auth, money, data, public API, migrations, UI | all seven |
+
+Six gates, each producing an artifact in `.ship/`:
+
+```text
+G0 Frame -> G1 Recon -> G2 Plan -> G3 Build -> G4 Verify -> G5 Review and Ship
+```
+
+A gate passes only with evidence: a command and its output, a screenshot, or a test name. A gate that does not exist is `NOT RUN`, never passed.
+
+Any UI work must also pass `skills/frontend-design/references/anti-generic-aesthetics.md` and produce a design record before styling.
+
+Use it:
+
+```text
+/ship-team add passkey login to the existing auth flow
+/build-fast fix the empty states on the orders table
+```
+
+See [Build Ship Team](docs/Build%20Ship%20Team.md) for the full workflow.
 
 ## Quick start
 
@@ -119,17 +161,43 @@ find ~/.agents/skills -mindepth 1 -maxdepth 1 -type d | wc -l
 for d in ~/.agents/skills/*/; do [ -f "$d/SKILL.md" ] || echo "missing: $d"; done
 ```
 
-Expect **93** skill folders (or more if you already had skills), and no output from the second command. Then restart the agent session so it re-indexes the skills.
+Expect **94** skill folders (or more if you already had skills), and no output from the second command. Then restart the agent session so it re-indexes the skills.
+
+### 5. Optional: install the agents and commands
+
+The `agents/` and `commands/` folders are not skills. They only apply to the harnesses that support them.
+
+Windows (PowerShell):
+
+```powershell
+$repo = "$env:USERPROFILE\Open-Source-Skills-For-Agents"
+New-Item -ItemType Directory -Force "$env:USERPROFILE\.config\opencode\agents","$env:USERPROFILE\.config\opencode\commands","$env:USERPROFILE\.claude\agents" | Out-Null
+Copy-Item "$repo\agents\opencode\*.md" "$env:USERPROFILE\.config\opencode\agents\" -Force
+Copy-Item "$repo\commands\*.md"        "$env:USERPROFILE\.config\opencode\commands\" -Force
+Copy-Item "$repo\agents\claude\*.md"   "$env:USERPROFILE\.claude\agents\" -Force
+```
+
+macOS / Linux:
+
+```bash
+repo=~/Open-Source-Skills-For-Agents
+mkdir -p ~/.config/opencode/agents ~/.config/opencode/commands ~/.claude/agents
+cp "$repo"/agents/opencode/*.md ~/.config/opencode/agents/
+cp "$repo"/commands/*.md ~/.config/opencode/commands/
+cp "$repo"/agents/claude/*.md ~/.claude/agents/
+```
+
+Restart the session again so the new agents and commands are indexed.
 
 ## Let your agent install everything itself
 
-Paste this prompt into a fresh agent session. The agent will detect its own skills directory, clone the repo, install all 93 skills, verify them, clean up, and report back.
+Paste this prompt into a fresh agent session. The agent will detect its own skills directory, clone the repo, install all 94 skills, verify them, optionally install the agents and commands, clean up, and report back.
 
 ```text
 Install the Open-Source-Skills-For-Agents collection on this machine.
 
 Repository: https://github.com/VisXhal06/Open-Source-Skills-For-Agents
-Goal: make all 93 skills available to you in future sessions.
+Goal: make all 94 skills available to you in future sessions.
 
 Rules:
 1. Detect the global skills directory your harness loads:
@@ -140,12 +208,16 @@ Rules:
 2. Clone the repository into a temporary directory.
 3. Copy every folder inside skills/ into the global skills directory. Do not copy docs/ or README.md.
 4. Never delete unrelated skills. If a skill name already exists, compare both versions, keep the newer content, and report the conflict.
-5. Verify that each of the 93 copied folders contains a SKILL.md with name and description frontmatter.
-6. Remove the temporary clone.
-7. Report the destination path, how many skills were installed, any conflicts, and remind me to restart the session so you re-index the skills.
+5. Verify that each of the 94 copied folders contains a SKILL.md with name and description frontmatter.
+6. If my harness is OpenCode or Claude Code, also install the agents and commands:
+   - OpenCode: agents/opencode/*.md -> ~/.config/opencode/agents/, commands/*.md -> ~/.config/opencode/commands/
+   - Claude Code: agents/claude/*.md -> ~/.claude/agents/
+   Ask before overwriting an existing agent or command with a different body.
+7. Remove the temporary clone.
+8. Report the destination path, how many skills were installed, which agents and commands were installed, any conflicts, and remind me to restart the session so you re-index the skills.
 ```
 
-The agent should finish with a report like: destination path, 93 installed, 0 conflicts, and a reminder to restart. If it cannot find its skills directory, it should ask rather than install somewhere arbitrary.
+The agent should finish with a report like: destination path, 94 installed, agents and commands listed, 0 conflicts, and a reminder to restart. If it cannot find its skills directory, it should ask rather than install somewhere arbitrary.
 
 For a project-local install, change rule 1 to the project path (`.agents/skills` for OpenCode, `.claude/skills` for Claude Code) and install there instead.
 
@@ -174,6 +246,7 @@ Re-copying overwrites skills with the same name. Back up any local edits first. 
 | Research a topic | `research`, `firecrawl` |
 | Understand a new codebase | `understand`, `understand-onboard` |
 | Reverse engineer a shipped app | `reverse-engineer-anything`, `rea` |
+| Build and ship a change fast | `build-ship-team` (`/ship-team`, `/build-fast`) |
 | Prepare a branch for review | `requesting-code-review`, `verification-before-completion` |
 | End a long session cleanly | `handoff` |
 
@@ -187,20 +260,26 @@ Re-copying overwrites skills with the same name. Back up any local edits first. 
 ## Repository layout
 
 ```text
-skills/                 93 skill packages, one folder per skill
+skills/                 94 skill packages, one folder per skill
   <skill-name>/
     SKILL.md            name, description, and instructions
     ...                 optional scripts, references, templates, assets
+agents/                 7 OpenCode agents, 7 Claude Code agents
+  opencode/
+  claude/
+commands/               14 slash commands for OpenCode
+licenses/               third-party license texts
 docs/                   reference notes, reports, and research
   reports/
   research_notes/
 README.md               this file
+ATTRIBUTION.md          third-party skills and their licenses
 ```
 
 ## Skill index
 
 <details>
-<summary>All 93 skills (alphabetical)</summary>
+<summary>All 94 skills (alphabetical)</summary>
 
 - [advisor](skills/advisor/SKILL.md)
 - [agent-delegation](skills/agent-delegation/SKILL.md)
@@ -208,6 +287,7 @@ README.md               this file
 - [ai-design-workflow](skills/ai-design-workflow/SKILL.md)
 - [ask-questions-if-underspecified](skills/ask-questions-if-underspecified/SKILL.md)
 - [brainstorming](skills/brainstorming/SKILL.md)
+- [build-ship-team](skills/build-ship-team/SKILL.md)
 - [caveman](skills/caveman/SKILL.md)
 - [cloudflare](skills/cloudflare/SKILL.md)
 - [codebase-playbook](skills/codebase-playbook/SKILL.md)
@@ -300,7 +380,8 @@ README.md               this file
 
 ## Documentation
 
-- [OpenCode Skills](docs/OpenCode%20Skills.md) — complete reference for all 93 skills, including invocation examples and workflow recipes
+- [OpenCode Skills](docs/OpenCode%20Skills.md) — complete reference for all 94 skills, including invocation examples and workflow recipes
+- [Build Ship Team](docs/Build%20Ship%20Team.md) — the seven-role team, lanes, gates, and artifacts
 - [Design Engineering Skills](docs/Design%20Engineering%20Skills.md)
 - [Goal to Execution](docs/Goal%20to%20Execution.md)
 - [GSoC Strategy 2027](docs/GSoC%20Strategy%202027.md)
@@ -314,3 +395,5 @@ Reports and research notes live in [docs/reports](docs/reports) and [docs/resear
 ## Attribution
 
 These are installed copies of publicly available agent skills. Each skill may carry its own license or attribution requirements; review the individual skill and its upstream project before redistributing it.
+
+Third-party origins and licenses are listed in [ATTRIBUTION.md](ATTRIBUTION.md). The Apache-2.0 text for the InsForge skills is in [licenses/Apache-2.0.txt](licenses/Apache-2.0.txt).

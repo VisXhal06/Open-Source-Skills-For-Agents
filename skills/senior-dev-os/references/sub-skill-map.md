@@ -34,6 +34,18 @@ The router `senior-dev-os` is the front door. Every skill below is also directly
 | `handoff` | `~/.agents/skills/handoff/SKILL.md` | Session ending, context limit, or passing work to another agent | Handoff document |
 | `using-git-worktrees` | `~/.agents/skills/using-git-worktrees/SKILL.md` | Isolated feature work or parallel agents | Worktree or branch |
 | `dispatching-parallel-agents` | `~/.agents/skills/dispatching-parallel-agents/SKILL.md` | Two or more independent tasks | Parallel execution plan |
+| `build-ship-team` | `~/.agents/skills/build-ship-team/SKILL.md` | Building and shipping fast with a named team and evidence gates | Frame, lane, dispatch order, verified release |
+
+### When to use the team instead of a single skill
+
+`build-ship-team` is the packaged team: `ship-lead`, `scout`, `architect`, `builder`, `verifier`, `reviewer`, `shipper`. Use it when the request spans more than one role and must end in a verified, shippable change.
+
+| Request shape | Use |
+| --- | --- |
+| One narrow idea or unclear outcome | `goal` |
+| A plan with independent tasks | `writing-plans` + `subagents` |
+| A change that must be built, verified, and shipped | `build-ship-team` |
+| A production or LLM release decision | `launch-readiness` / `llm-release-gate` |
 
 ## Access rules
 

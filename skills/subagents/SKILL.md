@@ -23,6 +23,7 @@ Part of the senior-dev suite. `senior-dev-os` can load this skill automatically 
 | `advisor` | What do the experts think about the decision? |
 | `subagents` | Which specialist roles should do the work, and in what order? |
 | `agent-delegation` | What exactly goes in each task packet, and how is it reviewed? |
+| `build-ship-team` | Which named team and gates already exist for build-and-ship work? |
 | `dispatching-parallel-agents` | How do we run independent tasks in parallel? |
 | `subagent-driven-development` | How do we execute an implementation plan with subagents? |
 

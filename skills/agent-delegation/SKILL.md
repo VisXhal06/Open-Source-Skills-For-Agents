@@ -41,6 +41,16 @@ Do not delegate when the work is:
 
 Use `brainstorming` and `writing-plans` before delegating the first task. An agent should not be the first place a decision is made.
 
+## When the team already exists
+
+If the work is build-and-ship rather than a one-off delegation, use `build-ship-team` instead of inventing the roster. It ships a named team with fixed contracts, lanes, and gates:
+
+```text
+ship-lead → scout → architect → builder → verifier → reviewer → shipper
+```
+
+Use this skill for the packet design, ownership rules, and review discipline inside a slice. Use `build-ship-team` for the whole change, the lane choice, and the release decision.
+
 ## AI-era guardrails
 
 AI is an amplifier: it increases throughput and, without strong controls, instability. DORA's 2025 research found both effects. Keep the guardrails explicit:

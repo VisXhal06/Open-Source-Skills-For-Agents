@@ -5,7 +5,7 @@ aliases:
   - Agent Skills
 type: reference
 created: 2026-10-20
-updated: 2026-10-22
+updated: 2026-11-03
 tags:
   - opencode
   - skills
@@ -16,7 +16,7 @@ tags:
 # OpenCode Skills
 
 > [!info] What this is
-> A complete reference for the **93 agent skills** installed globally in `~/.agents/skills`. Every project on this machine can use them. This note explains what each skill does, when to reach for it, and what to say.
+> A complete reference for the **94 agent skills** installed globally in `~/.agents/skills`. Every project on this machine can use them. This note explains what each skill does, when to reach for it, and what to say.
 
 > [!tip] The one rule
 > Skills load automatically when your request matches their description. To be certain, name the skill: **"Use the `<skill-name>` skill to …"**
@@ -48,8 +48,9 @@ Or ask the agent: *"List your available skills."*
 ## Category index
 
 - [[#Planning and development]] — 15 skills
-- [[#Senior-dev guardrails]] — 3 skills
-- [[#Frontend and design]] — 5 skills
+- [[#Senior-dev guardrails]] - 3 skills
+- [[#Build and ship]] - 1 skill
+- [[#Frontend and design]] - 5 skills
 - [[#Design engineering]] — 8 skills
 - [[#Cloudflare]] — 6 skills
 - [[#Research and web]] — 8 skills
@@ -491,6 +492,20 @@ The maintainer-grade OSS suite: 11 skills for finding issues, mapping unfamiliar
 > Read the project's `CONTRIBUTING.md`, `SECURITY.md`, and AI policy first. Never
 > fabricate tests or maintainer approval, never report a vulnerability publicly,
 > and never mass-open AI-generated PRs.
+
+---
+
+## Build and ship
+
+The build-ship team. One skill and seven named agents that take a change from frame to release, with independent verification and a hard anti-generic UI gate.
+
+### build-ship-team
+
+**What:** Runs a small named team — `ship-lead`, `scout`, `architect`, `builder`, `verifier`, `reviewer`, `shipper` — through six gates: frame, recon, plan, build, verify, ship. Picks the smallest lane that can still prove the change works, keeps evidence in `.ship/`, and refuses to ship on a missing gate.
+**Use when:** You want to build and ship fast without shipping unverified code, or you need a repeatable release path for a feature, fix, or client project.
+**Try:** `/ship-team add passkey login to the existing auth flow` or `/build-fast fix the empty states on the orders table`
+**Agents:** 7 OpenCode agents in `~/.config/opencode/agents` and 7 Claude Code agents in `~/.claude/agents`.
+**Docs:** [[Build Ship Team]]
 
 ---
 
@@ -940,14 +955,17 @@ handoff
 
 | Item | Status |
 | --- | --- |
-| Global skills | 93 installed in `C:\Users\Vishal\.agents\skills` |
-| OpenCode registration | All 93 discoverable; reload OpenCode for the new commands |
+| Global skills | 94 installed in `C:\Users\Vishal\.agents\skills` |
+| OpenCode registration | All 94 discoverable; reload OpenCode for the new commands |
 | Firecrawl CLI | v1.26.15 installed; not authenticated |
 | Perplexity MCP | Disabled — requires paid API org |
 | Research command | `/research` available globally |
 | Senior-dev command | `/senior-dev` available globally |
 | Senior-dev access | `senior-dev-os` loads sub-skills automatically; direct invocation also works |
 | Senior-dev research | `senior-dev-os/references/senior-dev-thinking.md` and `sub-skill-map.md` |
+| Build-ship command | `/ship-team` and `/build-fast` available globally |
+| Build-ship agents | 7 OpenCode agents and 7 Claude Code agents, all verified |
+| Build-ship skill | `build-ship-team` with 4 references and 7 templates |
 | Goal command | `/goal` available globally |
 | Advisor command | `/advisor` available globally |
 | Subagents command | `/subagents` available globally |
@@ -1045,4 +1063,4 @@ OpenCode discovers all of them. This setup uses the shared `.agents/skills` dire
 
 ---
 
-*Last verified: 2026-10-24. Skill count: 93.*
+*Last verified: 2026-11-03. Skill count: 94.*

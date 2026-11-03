@@ -2,7 +2,7 @@
 title: OSS and Freelance Skills
 tags: [skills, open-source, freelancing, opencode, engineering, product]
 created: 2026-10-22
-updated: 2026-10-22
+updated: 2026-11-03
 status: active
 ---
 
@@ -131,7 +131,7 @@ freelance-client-delivery
 
 ## What changed in the skill library
 
-The global library was 76 skills. This suite adds 16; with the later AI engineering add-on, `llm-release-gate`, the global total is **93**.
+The global library was 76 skills. This suite adds 16; with the later AI engineering add-on, `llm-release-gate`, and the build-ship add-on, `build-ship-team`, the global total is **94**.
 
 New skills:
 
@@ -279,4 +279,4 @@ If `/oss`, `/issues`, `/gsoc`, or `/freelance` is not visible, restart OpenCode 
 
 ---
 
-*Last verified: 2026-10-23. Global skill count: 93.*
+*Last verified: 2026-11-03. Global skill count: 94.*

@@ -189,6 +189,17 @@ cp "$repo"/agents/claude/*.md ~/.claude/agents/
 
 Restart the session again so the new agents and commands are indexed.
 
+### Or run the install script
+
+Windows (PowerShell) only:
+
+```powershell
+.\scripts\install.ps1 -DryRun   # show what would be copied
+.\scripts\install.ps1           # copy skills, agents, and commands into place
+```
+
+`.\scripts\sync.ps1` does the reverse: it refreshes this repository from the live global configuration after you edit a skill locally.
+
 ## Let your agent install everything itself
 
 Paste this prompt into a fresh agent session. The agent will detect its own skills directory, clone the repo, install all 94 skills, verify them, optionally install the agents and commands, clean up, and report back.
